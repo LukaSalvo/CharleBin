@@ -47,7 +47,7 @@ class PurgeLimiter extends AbstractPersistence
      *
      * @access public
      * @static
-     * @param Configuration $conf
+     * @param  Configuration $conf
      */
     public static function setConfiguration(Configuration $conf)
     {
@@ -69,8 +69,8 @@ class PurgeLimiter extends AbstractPersistence
         }
 
         $now  = time();
-        $pl   = (int) self::$_store->getValue('purge_limiter');
-        if ($pl + self::$_limit >= $now) {
+        $purgeLimit   = (int) self::$_store->getValue('purge_limiter');
+        if ($purgeLimit + self::$_limit >= $now) {
             return false;
         }
         $hasStored = self::$_store->setValue((string) $now, 'purge_limiter');

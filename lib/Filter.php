@@ -38,14 +38,14 @@ class Filter
             throw new Exception("Error parsing time format '$time'", 30);
         }
         switch ($matches[2]) {
-            case 'sec':
-                $unit = 'second';
-                break;
-            case 'min':
-                $unit = 'minute';
-                break;
-            default:
-                $unit = rtrim($matches[2], 's');
+        case 'sec':
+            $unit = 'second';
+            break;
+        case 'min':
+            $unit = 'minute';
+            break;
+        default:
+            $unit = rtrim($matches[2], 's');
         }
         return I18n::_(array('%d ' . $unit, '%d ' . $unit . 's'), (int) $matches[1]);
     }
@@ -60,12 +60,12 @@ class Filter
      */
     public static function formatHumanReadableSize($size)
     {
-        $iec = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
-        $i   = 0;
+        $indexec = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
+        $index   = 0;
         while (($size / 1024) >= 1) {
             $size = $size / 1024;
-            ++$i;
+            ++$index;
         }
-        return number_format($size, ($i ? 2 : 0), '.', ' ') . ' ' . I18n::_($iec[$i]);
+        return number_format($size, ($index ? 2 : 0), '.', ' ') . ' ' . I18n::_($indexec[$index]);
     }
 }

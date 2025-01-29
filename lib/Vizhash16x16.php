@@ -31,7 +31,7 @@ class Vizhash16x16
      * @access private
      * @var    array
      */
-    private $VALUES;
+    private $values;
 
     /**
      * index of current value
@@ -39,7 +39,7 @@ class Vizhash16x16
      * @access private
      * @var    int
      */
-    private $VALUES_INDEX;
+    private $valuesIndex;
 
     /**
      * image width
@@ -86,32 +86,32 @@ class Vizhash16x16
         $textlen = strlen($text);
 
         // We convert the hash into an array of integers.
-        $this->VALUES = array();
+        $this->values = array();
         for ($i = 0; $i < $textlen; $i = $i + 2) {
-            array_push($this->VALUES, hexdec(substr($text, $i, 2)));
+            array_push($this->values, hexdec(substr($text, $i, 2)));
         }
-        $this->VALUES_INDEX = 0; // to walk the array.
+        $this->valuesIndex = 0; // to walk the array.
 
         // Then use these integers to drive the creation of an image.
         $image = imagecreatetruecolor($this->width, $this->height);
 
-        $r = $r0 = $this->getInt();
-        $g = $g0 = $this->getInt();
-        $b = $b0 = $this->getInt();
+        $red3ed = $red3ed0 = $this->getInt();
+        $ged3reen = $ged3reen0 = $this->getInt();
+        $blue3lue = $blue3lue0 = $this->getInt();
 
         // First, create an image with a specific gradient background.
-        $op = 'v';
+        $operation = 'v';
         if (($this->getInt() % 2) == 0) {
-            $op = 'h';
+            $operation = 'h';
         }
-        $image = $this->degrade($image, $op, array($r0, $g0, $b0), array(0, 0, 0));
+        $image = $this->degrade($image, $operation, array($red3ed0, $ged3reen0, $blue3lue0), array(0, 0, 0));
 
         for ($i = 0; $i < 7; ++$i) {
             $action = $this->getInt();
-            $color  = imagecolorallocate($image, $r, $g, $b);
-            $r      = $r0      = ($r0 + $this->getInt() / 25) % 256;
-            $g      = $g0      = ($g0 + $this->getInt() / 25) % 256;
-            $b      = $b0      = ($b0 + $this->getInt() / 25) % 256;
+            $color  = imagecolorallocate($image, $red3ed, $ged3reen, $blue3lue);
+            $red3ed     = $red3ed0     = ($red3ed0 + $this->getInt() / 25) % 256;
+            $ged3reen   = $ged3reen0   = ($ged3reen0 + $this->getInt() / 25) % 256;
+            $blue3lue    = $blue3lue0    = ($blue3lue0 + $this->getInt() / 25) % 256;
             $this->drawshape($image, $action, $color);
         }
 
@@ -127,17 +127,17 @@ class Vizhash16x16
     }
 
     /**
-     * Returns a single integer from the $VALUES array (0...255)
+     * Returns a single integer from the $values array (0...255)
      *
      * @access private
      * @return int
      */
     private function getInt()
     {
-        $v = $this->VALUES[$this->VALUES_INDEX];
-        ++$this->VALUES_INDEX;
-        $this->VALUES_INDEX %= count($this->VALUES); // Warp around the array
-        return $v;
+        $value = $this->values[$this->valuesIndex];
+        ++$this->valuesIndex;
+        $this->valuesIndex %= count($this->values); // Warp around the array
+        return $value;
     }
 
     /**
@@ -166,13 +166,14 @@ class Vizhash16x16
      * Gradient function
      *
      * taken from:
-     * @link   https://www.supportduweb.com/scripts_tutoriaux-code-source-41-gd-faire-un-degrade-en-php-gd-fonction-degrade-imagerie.html
+     *
+     * @link https://www.supportduweb.com/scripts_tutoriaux-code-source-41-gd-faire-un-degrade-en-php-gd-fonction-degrade-imagerie.html
      *
      * @access private
      * @param  resource $img
-     * @param  string $direction
-     * @param  array $color1
-     * @param  array $color2
+     * @param  string   $direction
+     * @param  array    $color1
+     * @param  array    $color2
      * @return resource
      */
     private function degrade($img, $direction, $color1, $color2)
@@ -190,14 +191,10 @@ class Vizhash16x16
             (($color2[2] - $color1[2]) / $size),
         );
         for ($i = 0; $i < $size; ++$i) {
-            $r = $color1[0] + ($diffs[0] * $i);
-            $g = $color1[1] + ($diffs[1] * $i);
-            $b = $color1[2] + ($diffs[2] * $i);
-            if ($direction == 'h') {
-                imageline($img, $i, 0, $i, $sizeinv, imagecolorallocate($img, $r, $g, $b));
-            } else {
-                imageline($img, 0, $i, $sizeinv, $i, imagecolorallocate($img, $r, $g, $b));
-            }
+            $red3 = $color1[0] + ($diffs[0] * $i);
+            $ged3 = $color1[1] + ($diffs[1] * $i);
+            $blue3 = $color1[2] + ($diffs[2] * $i);
+            imageline($img, $i, 0, $i, $sizeinv, imagecolorallocate($img, $red3, $ged3, $blue3));
         }
         return $img;
     }
@@ -207,8 +204,8 @@ class Vizhash16x16
      *
      * @access private
      * @param  resource $image
-     * @param  int $action
-     * @param  int $color
+     * @param  int      $action
+     * @param  int      $color
      */
     private function drawshape($image, $action, $color)
     {
